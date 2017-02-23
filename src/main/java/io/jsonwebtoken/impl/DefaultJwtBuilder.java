@@ -300,9 +300,12 @@ public class DefaultJwtBuilder implements JwtBuilder {
 
         if (key != null) {
             jwsHeader.setAlgorithm(algorithm.getValue());
-        } else {
+        } else if (this.cryptoProvider != null && this.config!= null && this.config.containsKey(JwsHeader.ALGORITHM)) {
+        	//If cryptoProvider is set and has algorithm in its config params
+    		jwsHeader.setAlgorithm(this.config.get(JwsHeader.ALGORITHM).toString());
+    	} else {
             //no signature - plaintext JWT:
-            jwsHeader.setAlgorithm(SignatureAlgorithm.NONE.getValue());
+        	jwsHeader.setAlgorithm(SignatureAlgorithm.NONE.getValue());
         }
 
         if (compressionCodec != null) {
